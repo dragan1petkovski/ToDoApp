@@ -1,0 +1,125 @@
+## .NET Core / C# .gitignore
+ 
+## User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+ 
+## Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+msbuild.log
+msbuild.err
+msbuild.wrn
+ 
+## Visual Studio
+.vs/
+*.vspscc
+*.vssscc
+.builds
+*.pidb
+*.svclog
+*.scc
+ 
+## Visual Studio Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+ 
+## Rider
+.idea/
+*.sln.iml
+ 
+## NuGet
+*.nupkg
+*.snupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+*.nuget.props
+*.nuget.targets
+project.lock.json
+project.fragment.lock.json
+artifacts/
+ 
+## ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+ 
+## StyleCop
+StyleCopReport.xml
+ 
+## Test results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.trx
+*.coverage
+*.coveragexml
+coverage*.json
+coverage*.xml
+coverage*.info
+*.VisualState.xml
+TestResult.xml
+nunit-*.xml
+ 
+## Publish / Deployment
+*.[Pp]ublish.xml
+*.azurePubxml
+*.pubxml
+*.publishproj
+PublishScripts/
+*.Publish.xml
+ 
+## Others
+*.log
+*.tmp
+*.bak
+*.swp
+*~
+.DS_Store
+Thumbs.db
+*.cache
+*.ide/
+*.dbmdl
+*.jfm
+*.userprefs
+_pkginfo.txt
+*.tss
+*.ldf
+*.ndf
+ 
+## Environment / secrets
+.env
+.env.local
+appsettings.*.local.json
+secrets.json
+ 
+## Node (if using a frontend within the project e.g. Blazor/React)
+node_modules/
+ 
+## Database
+*.mdf
+*.ldf
+*.sdf
+ 
+## OS generated files
+ehthumbs.db
+Desktop.ini
+ 
+ 
+## Logs
+Logs/
+*.log

@@ -1,0 +1,18 @@
+<div class="p-3">
+    <div class="text-center mb-4">
+        <h3>Delete {{this.type}}</h3>
+    </div>
+    <div class="mb-4">
+        <div class="row">
+            <p>Do you want to delete {{this.type}} {{this.name}} </p>
+        </div>
+
+    </div>
+    <div>
+        <div class="d-flex justify-content-end">
+            <button class="btn btn-primary me-2" (click)="DeleteItem()">Save</button>
+            <button class="btn btn-danger" (click)="activeModal.close()">Close</button>
+        </div>
+    </div>
+</div>
+

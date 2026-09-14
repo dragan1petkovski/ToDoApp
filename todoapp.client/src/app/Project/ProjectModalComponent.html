@@ -1,0 +1,46 @@
+<div class="p-3">
+    <div class="text-center mb-4">
+        <h3>{{this.type}} Project</h3>
+    </div>
+    <div class="mb-4">
+        <form [formGroup]="createProjectForm">
+            <div class="row">
+                <div class="col-3">
+                    <p>
+                        Name @if (this.createProjectForm.controls.name.invalid) {
+                        <span class="text-danger">*</span>
+                        }
+                    </p>
+                </div>
+                <div class="col-9">
+                    <input type="text" class="form-control" formControlName="name" />
+                </div>
+                <div class="d-flex justify-content-center">
+                    @if(this.createProjectForm.controls.name.invalid)
+                    {
+                    @if(this.createProjectForm.controls.name.dirty || this.createProjectForm.controls.name.touched)
+                    {
+                    <p class="text-danger">Invalid Username</p>
+                    }
+                    }
+                </div>
+            </div>
+        </form>
+
+    </div>
+    <div>
+        <div class="d-flex justify-content-end">
+            @if(this._updateProject == null)
+            {
+                <button class="btn btn-primary me-2" [disabled]="this.createProjectForm.invalid" (click)="CreateProject()">Create</button>
+            }
+            @else
+            {
+                <button class="btn btn-primary me-2" [disabled]="this.createProjectForm.invalid" (click)="UpdateProject()">Update</button>
+            }
+            
+            <button class="btn btn-danger" (click)="activeModal.close()" >Close</button>
+        </div>
+    </div>
+</div>
+

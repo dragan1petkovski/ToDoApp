@@ -1,0 +1,30 @@
+<div class="row m-0 border rounded-3 mb-2">
+    <div class="d-flex justify-content-between">
+        <div class="d-flex">
+            <p> <span class="fw-bold">ID: </span> T-{{ticket.id}};</p>&nbsp;
+        </div>
+        <div>
+
+            <i class="bi bi-pencil"></i>&nbsp;
+            <i class="bi bi-trash"></i>
+        </div>
+
+    </div>
+
+    <div class="d-flex">
+        <p class="me-4"><span class="fw-bold">Created On: </span> {{ticket.createdon | date: 'dd.MM.yyyy HH:mm'}}</p>
+        @if(this.ticket.finishedby)
+        {
+        <p><span class="fw-bold">Finish By: </span> {{ticket.finishedby | date: 'dd.MM.yyyy HH:mm'}}</p>
+        }
+
+
+    </div>
+
+    <p> <span class="fw-bold">Title: </span> {{ticket.title}}</p>
+    @if(this.ticket.description)
+    {
+    <p><span class="fw-bold">Description: </span> {{ticket.description}}</p>
+    }
+
+</div>

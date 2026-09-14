@@ -1,0 +1,12 @@
+<Solution>
+  <Project Path="DBLayer/DBLayer.csproj" Id="7ef9a0a6-451e-47e8-8cfd-b2c5f9488231" />
+  <Project Path="DomainModel/DomainModel.csproj" Id="82d64f40-7ac4-401e-a359-e6426eb81e9f" />
+  <Project Path="DTO/DTO.csproj" Id="68fc887a-fa82-4291-b2e1-13ae53fda0a5" />
+  <Project Path="SvcProject/SvcProject.csproj" Id="bd0d5c58-7b8e-48ff-98d2-087331fbad25" />
+  <Project Path="SvcTicket/SvcTicket.csproj" Id="dc8ec7ab-671f-41ab-9433-ce8eb1ff2bd9" />
+  <Project Path="todoapp.client/todoapp.client.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+  <Project Path="ToDoApp.Server/ToDoApp.Server.csproj" />
+</Solution>
