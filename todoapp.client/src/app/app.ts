@@ -7,8 +7,9 @@ import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap"
 import { DeleteModalComponent } from "./DeleteComponenet/DeleteModalComponent"
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray, transferArrayItem, DragDropModule } from "@angular/cdk/drag-drop"
 import { TicketResponse } from './DTO/Ticket/TicketResponse'
-import { Component, signal, WritableSignal, ChangeDetectorRef } from '@angular/core'
+import { Component, ChangeDetectorRef } from '@angular/core'
 import { api_endpoints } from "./StaticObjects/api_endpoints"
+import { DataShare } from "./Service/DataShare"
 
 @Component({
     standalone: true,
@@ -20,16 +21,14 @@ import { api_endpoints } from "./StaticObjects/api_endpoints"
 
 export class App {
 
-    constructor(private modal: NgbModal, private http: ConnectionSvc, private cdr: ChangeDetectorRef) {
+    constructor(private modal: NgbModal, private http: ConnectionSvc, private cdr: ChangeDetectorRef, protected dataShare: DataShare) {
+        console.log(this.dataShare.GetProjectList())
     }
-
-    protected projectList: WritableSignal<ProjectResponse[]> = signal([])
-    protected ticketList: WritableSignal<TicketResponse[]> = signal([])
 
     ngOnInit() {
         this.http.GET<ProjectResponse[]>(api_endpoints.project).subscribe(plist => {
-            this.projectList.set(plist)
-            this.http.GET<TicketResponse[]>(api_endpoints.ticket.concat(`?projectid=${plist[0].id}`)).subscribe(tlist => this.ticketList.set(tlist))
+            this.dataShare.SetProjectList(plist)
+            this.http.GET<TicketResponse[]>(api_endpoints.ticket.concat(`?projectid=${plist[0].id}`)).subscribe(tlist => this.dataShare.SetTicketList(tlist))
         })
 
     }
@@ -39,46 +38,24 @@ export class App {
         switch (type) {
             case 'project':
                 if (item == null) {
-                    this.modal.open(ProjectModalComponent, { animation: false }).result.then(result => {
-
-                        if (result != undefined) {
-                            let temp = this.projectList()
-                            temp.push(result)
-                            this.projectList.set(temp)
-                            this.cdr.detectChanges();
-                        }
-
-                    })
+                    this.modal.open(ProjectModalComponent, { animation: false })
                 }
                 else {
 
                     let _modal: NgbModalRef = this.modal.open(ProjectModalComponent, { animation: false })
                     _modal.componentInstance._updateProject = item
-                    _modal.result.then(result => {
-
-                        if (result != undefined) {
-                            let temp = this.projectList()
-                            temp[temp.findIndex(p => p.id == result.id)]=result
-                            this.projectList.set(temp)
-                            this.cdr.detectChanges();
-                        }
-
-                    })
+                    
                 }
 
                 break;
             case 'ticket':
-                this.modal.open(TicketModalComponent, { size: 'lg', animation: false }).result.then(res => {
-                    let temp = this.ticketList()
-                    temp.push(res)
-                    this.ticketList.set(temp)
-                })
+                this.modal.open(TicketModalComponent, { size: 'lg', animation: false })
         }
         
     }
 
     public GetProjectTickets(projectId: string) {
-        console.log(projectId)
+        this.http.GET<TicketResponse[]>(api_endpoints.ticket.concat(`?projectid=${projectId}`)).subscribe(tlist => this.dataShare.SetTicketList(tlist))
     }
 
     public DeleteProject(type: string, name: string, id: string) {
@@ -86,13 +63,7 @@ export class App {
         _modal.componentInstance.type = type
         _modal.componentInstance.name = name
         _modal.componentInstance.id = id
-        _modal.result.then(result => {
-            if (result) {
-                let temp = this.projectList()
-                this.projectList.set(temp.filter(p => p.id != id))
-                this.cdr.detectChanges();
-            }
-        })
+ 
     }
 }
 

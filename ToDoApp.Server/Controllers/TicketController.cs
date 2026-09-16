@@ -17,28 +17,58 @@ namespace ToDoApp.Server.Controllers
         }
 
         [HttpGet("api/[controller]")]
-        public IEnumerable<TicketResponse> Get([FromQuery] int? status)
+        public IEnumerable<TicketResponse> Get([FromQuery] Guid? projectid)
         {
-            if(status is null)
+            if(projectid.HasValue)
             {
-                return _service.GetAllTickets();
+                return _service.GetTicketsByProjectId(projectid.Value);
             }
             else
             {
-                return _service.GetAllTicketsByStatus((TicketStatusEnum)status);
+                return _service.GetAllTickets();
             }
-        }
-
-        [HttpGet("api/[controller]")]
-        public IEnumerable<TicketResponse> GetTicketByProjectId([FromQuery] Guid projectid)
-        {
-            return _service.GetTicketsByProjectId(projectid);
         }
 
         [HttpPost("api/[controller]")]
         public IActionResult Create([FromBody] TicketRequest newTicket)
         {
-            return Ok(_service.Create(newTicket));
+            TicketResponse output = _service.Create(newTicket);
+            if(output is not null)
+            {
+                return StatusCode(201, output);
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status503ServiceUnavailable);
+            }
+            
+        }
+
+        [HttpPut("api/[controller]")]
+        public IActionResult Update([FromBody] TicketRequest updateTicket)
+        {
+            TicketResponse output = _service.Update(updateTicket);
+            if (output is not null)
+            {
+                return StatusCode(200, output);
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status503ServiceUnavailable);
+            }
+        }
+
+        [HttpDelete("api/[controller]/{id:long}")]
+        public IActionResult Delete(long id)
+        {
+            if(_service.Delete(id))
+            {
+                return NoContent();
+            }
+            else
+            {
+                return StatusCode(StatusCodes.Status503ServiceUnavailable);
+            }
         }
     }
 }

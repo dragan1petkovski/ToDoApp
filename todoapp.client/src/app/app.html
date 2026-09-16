@@ -11,7 +11,7 @@
 </div>
 <div class="d-flex vh-100 mt-4">
     <div class="col-2 pe-3">
-        @for(project of this.projectList(); track project.id)
+        @for(project of this.dataShare.GetProjectList(); track project.id)
         {
         <div class="d-flex justify-content-between btn btn-outline-dark mb-2">
             <div class=" w-100 " (click)="GetProjectTickets(project.id)">
@@ -30,7 +30,7 @@
         <div class="col">
             <div class="row justify-content-center fw-bold m-0 mb-1 border rounded-3"> New </div>
 
-            @for(ticket of this.ticketList().filter(t => t.status == 0); track ticket.id)
+            @for(ticket of this.dataShare.GetTicketList().filter(t => t.status == 0); track ticket.id)
             {
             <ticket [ticket]="ticket"></ticket>
             }
@@ -42,9 +42,9 @@
         <div class="col">
             <div class="row justify-content-center fw-bold m-0 mb-1 border rounded-3"> In Progres </div>
 
-            @for(ticket of this.ticketList().filter(t => t.status == 1); track ticket.id)
+            @for(ticket of this.dataShare.GetTicketList().filter(t => t.status == 1); track ticket.id)
             {
-            <ticket cdkDrag></ticket>
+            <ticket [ticket]="ticket"></ticket>
             }
         </div>
 
@@ -60,9 +60,9 @@
                 </div>
             </div>
 
-            @for(ticket of this.ticketList().filter(t => t.status == 2); track ticket.id)
+            @for(ticket of this.dataShare.GetTicketList().filter(t => t.status == 2); track ticket.id)
             {
-            <ticket cdkDrag></ticket>
+            <ticket [ticket]="ticket"></ticket>
             }
 
         </div>

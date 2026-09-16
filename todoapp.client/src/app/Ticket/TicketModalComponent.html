@@ -1,6 +1,6 @@
 <div class="p-3 m-0">
     <div class="text-center mb-4">
-        <h3>Create new Ticket</h3>
+        <h3>{{this.modalType}} Ticket</h3>
     </div>
     <form [formGroup]="createTicketForm">
         <div class="mb-4">
@@ -31,7 +31,13 @@
                         <option value="">Project Name</option>
                         @for(item of this.projectList(); track item.id)
                         {
-                        <option value="{{item.id}}">{{item.name}}</option>
+                            @if(this._updateTicket.projectid == item.id)
+                            {
+                                <option value="{{item.id}}" selected>{{item.name}}</option>
+                            }
+                            @else{
+                                <option value="{{item.id}}">{{item.name}}</option>
+                            }
                         }
                     </select>
 
@@ -42,7 +48,14 @@
 
     <div>
         <div class="d-flex justify-content-end">
-            <button class="btn btn-primary me-2" (click)="CreateTicket()">Save</button>
+            @if(this._updateTicket)
+            {
+                <button class="btn btn-primary me-2" (click)="UpdateTicket()">Update Ticket</button>
+            }
+            @else{
+                <button class="btn btn-primary me-2" (click)="CreateTicket()">Create Ticket</button>
+            }
+            
             <button class="btn btn-danger" (click)="activeModal.close()">Close</button>
         </div>
     </div>

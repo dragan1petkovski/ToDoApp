@@ -1,30 +1,35 @@
-import { Component } from '@angular/core'
+import { Component, inject } from '@angular/core'
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap"
-import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ConnectionSvc } from '../Service/ConnectionSvc'
-import { ProjectRequest } from '../DTO/Project/ProjectRequest';
 import { api_endpoints } from '../StaticObjects/api_endpoints'
-import { ProjectResponse } from '../DTO/Project/ProjectResponse';
-import { TicketResponse } from '../DTO/Ticket/TicketResponse';
+import { DataShare } from '../Service/DataShare'
+
 @Component({
     standalone: true,
     templateUrl: "DeleteModalComponent.html",
-    imports: [ReactiveFormsModule],
+    imports: [],
     providers: [ConnectionSvc]
 })
 
-export class DeleteModalComponent<T> {
+export class DeleteModalComponent {
     constructor(protected activeModal: NgbActiveModal, private conService: ConnectionSvc) { }
+    dataShare = inject(DataShare)
     protected id!: string
     protected name!: string
     protected type!: "ticket" | "project"
     protected DeleteItem() {
         switch (this.type) {
             case 'project':
-                this.conService.DELETE(api_endpoints.project.concat(`/${this.id}`)).subscribe(res => this.activeModal.close(true), err => this.activeModal.close(false))
+                this.conService.DELETE(api_endpoints.project.concat(`/${this.id}`)).subscribe(res => {
+                    this.dataShare.SetProjectList(this.dataShare.GetProjectList().filter(t => t.id != this.id))
+                    this.activeModal.close()
+                }, err => this.activeModal.close())
                 break;
             case 'ticket':
-                this.conService.DELETE(api_endpoints.ticket.concat(`/${this.id}`)).subscribe(res => this.activeModal.close(true), err => this.activeModal.close(false))
+                this.conService.DELETE(api_endpoints.ticket.concat(`/${this.id}`)).subscribe(res => {
+                    this.dataShare.SetTicketList(this.dataShare.GetTicketList().filter(t => t.id != Number(this.id)))
+                    this.activeModal.close()
+                }, err => this.activeModal.close())
         }
         
     }
