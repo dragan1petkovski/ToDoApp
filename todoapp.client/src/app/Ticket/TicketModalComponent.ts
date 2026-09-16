@@ -20,9 +20,8 @@ export class TicketModalComponent {
     constructor(protected activeModal: NgbActiveModal, private http: ConnectionSvc, private cdr: ChangeDetectorRef) {
         this.dataShare.GetProjectList();
     }
-    dataShare = inject(DataShare)
+    protected dataShare = inject(DataShare)
     public projectId!: string
-    protected projectList: WritableSignal<ProjectResponse[]> = signal([])
 
     protected _updateTicket!: TicketResponse
 
@@ -35,18 +34,15 @@ export class TicketModalComponent {
     })
 
     ngOnInit() {
-        this.http.GET<ProjectResponse[]>(api_endpoints.project).subscribe(res => {
-            this.projectList.set(res)
-            if (this._updateTicket) {
-                this.createTicketForm.controls.title.setValue(this._updateTicket.title)
-                this.createTicketForm.controls.description.setValue(this._updateTicket.description)
-                this.createTicketForm.controls.project.setValue(this._updateTicket.projectid)
-                this.modalType = "Update"
-            }
-            else {
-                this.modalType = "Create"
-            }
-        })
+        if (this._updateTicket) {
+            this.createTicketForm.controls.title.setValue(this._updateTicket.title)
+            this.createTicketForm.controls.description.setValue(this._updateTicket.description)
+            this.createTicketForm.controls.project.setValue(this._updateTicket.projectid)
+            this.modalType = "Update"
+        }
+        else {
+            this.modalType = "Create"
+        }
 
 
 
