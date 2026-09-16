@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core'
+import { Component, inject, ChangeDetectorRef } from '@angular/core'
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap"
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ConnectionSvc } from '../Service/ConnectionSvc'
@@ -14,7 +14,7 @@ import { DataShare } from "../Service/DataShare"
 })
 
 export class ProjectModalComponent {
-    constructor(protected activeModal: NgbActiveModal, private conService:ConnectionSvc ) { }
+    constructor(protected activeModal: NgbActiveModal, private conService: ConnectionSvc, private cdr: ChangeDetectorRef ) { }
     dataShare = inject(DataShare)
     _updateProject!: ProjectRequest
     protected type!: 'Update' | 'Create'
@@ -25,7 +25,6 @@ export class ProjectModalComponent {
             this.type = 'Create'
         }
         else {
-            console.log(this._updateProject)
             this.type = "Update"
             this.createProjectForm.controls.name.setValue(this._updateProject.name)
             this.createProjectForm.controls.id.setValue(this._updateProject.id)
@@ -42,9 +41,7 @@ export class ProjectModalComponent {
     protected CreateProject() {
         let project: ProjectRequest = { name: this.createProjectForm.controls.name.value ?? "", id: null }
         this.conService.POST<ProjectResponse>(api_endpoints.project, JSON.stringify(project)).subscribe(res => {
-            let temp = this.dataShare.GetProjectList()
-            temp.push(res)
-            this.dataShare.SetProjectList(temp)
+            this.dataShare.SetProjectList([...this.dataShare.GetProjectList(), res])
             this.activeModal.close()
         })
     }
@@ -54,8 +51,9 @@ export class ProjectModalComponent {
         this.conService.PUT<ProjectResponse>(api_endpoints.project, JSON.stringify(project)).subscribe(res => {
             let temp = this.dataShare.GetProjectList()
             temp[temp.findIndex(p => p.id == res.id)] = res
-            this.dataShare.SetProjectList(temp)
+            this.dataShare.SetProjectList([...temp])
             this.activeModal.close()
+
         })
     }
 }

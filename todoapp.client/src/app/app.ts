@@ -22,7 +22,6 @@ import { DataShare } from "./Service/DataShare"
 export class App {
 
     constructor(private modal: NgbModal, private http: ConnectionSvc, private cdr: ChangeDetectorRef, protected dataShare: DataShare) {
-        console.log(this.dataShare.GetProjectList())
     }
 
     ngOnInit() {

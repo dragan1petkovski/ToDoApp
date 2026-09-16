@@ -1,4 +1,4 @@
-import { Component, WritableSignal, signal, inject } from '@angular/core';
+import { Component, WritableSignal, signal, inject , ChangeDetectorRef} from '@angular/core';
 import { ProjectResponse } from '../DTO/Project/ProjectResponse';
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap"
 import { ConnectionSvc } from "../Service/ConnectionSvc"
@@ -17,7 +17,9 @@ import { DataShare} from "../Service/DataShare"
 
 })
 export class TicketModalComponent {
-    constructor(protected activeModal: NgbActiveModal, private http: ConnectionSvc) { }
+    constructor(protected activeModal: NgbActiveModal, private http: ConnectionSvc, private cdr: ChangeDetectorRef) {
+        this.dataShare.GetProjectList();
+    }
     dataShare = inject(DataShare)
     public projectId!: string
     protected projectList: WritableSignal<ProjectResponse[]> = signal([])
@@ -61,6 +63,7 @@ export class TicketModalComponent {
             let temp = this.dataShare.GetTicketList()
             temp.push(res)
             this.dataShare.SetTicketList(temp)
+            this.cdr.detectChanges()
             this.activeModal.close()
         }, err => this.activeModal.close())
     }
@@ -76,7 +79,9 @@ export class TicketModalComponent {
             let temp = this.dataShare.GetTicketList()
             temp[temp.findIndex(t => t.id = res.id)] = res
             this.dataShare.SetTicketList(temp)
+            this.cdr.detectChanges()
             this.activeModal.close()
+            
         }, err => this.activeModal.close())
     }
 }
