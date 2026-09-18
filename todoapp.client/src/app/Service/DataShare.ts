@@ -26,4 +26,9 @@ export class DataShare {
     public SetProjectList(projectList: ProjectResponse[]): void {
         this._projectList.set(projectList)
     }
+
+    public GetTicketIndexNumber(id: number): number
+    {
+        return this._ticketList().findIndex(t => t.id == id)
+    }
 }

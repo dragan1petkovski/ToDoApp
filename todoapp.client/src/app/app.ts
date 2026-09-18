@@ -7,21 +7,22 @@ import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap"
 import { DeleteModalComponent } from "./DeleteComponenet/DeleteModalComponent"
 import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray, transferArrayItem, DragDropModule } from "@angular/cdk/drag-drop"
 import { TicketResponse } from './DTO/Ticket/TicketResponse'
-import { Component, ChangeDetectorRef } from '@angular/core'
+import { Component, ChangeDetectorRef, effect } from '@angular/core'
 import { api_endpoints } from "./StaticObjects/api_endpoints"
 import { DataShare } from "./Service/DataShare"
+import { CurrentProject } from './Service/CurrentProject'
 
 @Component({
     standalone: true,
     selector: 'app-root',
     templateUrl: './app.html',
-    imports: [TicketComponenet],
+    imports: [TicketComponenet,CdkDropList, CdkDrag,DragDropModule],
     providers: [ConnectionSvc]
 })
 
 export class App {
 
-    constructor(private modal: NgbModal, private http: ConnectionSvc, private cdr: ChangeDetectorRef, protected dataShare: DataShare) {
+    constructor(private modal: NgbModal, private http: ConnectionSvc, private cdr: ChangeDetectorRef, protected dataShare: DataShare, private currentProject: CurrentProject) {
     }
 
     ngOnInit() {
@@ -54,7 +55,12 @@ export class App {
     }
 
     public GetProjectTickets(projectId: string) {
-        this.http.GET<TicketResponse[]>(api_endpoints.ticket.concat(`?projectid=${projectId}`)).subscribe(tlist => this.dataShare.SetTicketList(tlist))
+        this.RemoveActiveClass()
+        this.ActivateButtonById(projectId)
+        this.currentProject.SetCurrentProjectId(projectId)
+        this.http.GET<TicketResponse[]>(api_endpoints.ticket.concat(`?projectid=${projectId}`)).subscribe(tlist => {
+            this.dataShare.SetTicketList(tlist)
+            })
     }
 
     public DeleteProject(type: string, name: string, id: string) {
@@ -64,5 +70,63 @@ export class App {
         _modal.componentInstance.id = id
  
     }
+
+    public Drop(event: CdkDragDrop<TicketResponse[]>)
+    {
+        let temp!: TicketResponse[]
+        let tempItem!: TicketResponse
+        if(event.container != event.previousContainer)
+        {
+            switch (event.container.id)
+            {
+                case "inProgressList":
+                    temp = this.dataShare.GetTicketList()
+                    tempItem = event.item.data
+                    tempItem.status = 1
+                    temp[this.dataShare.GetTicketIndexNumber(tempItem.id)] = tempItem
+                    this.dataShare.SetTicketList([...temp])
+                    break;
+                case "newList":
+                    temp = this.dataShare.GetTicketList()
+                    tempItem = event.item.data
+                    tempItem.status = 0
+                    temp[this.dataShare.GetTicketIndexNumber(tempItem.id)] = tempItem
+                    this.dataShare.SetTicketList([...temp])
+                    break;
+                case "completeList":
+                    temp = this.dataShare.GetTicketList()
+                    tempItem = event.item.data
+                    tempItem.status = 2
+                    temp[this.dataShare.GetTicketIndexNumber(tempItem.id)] = tempItem
+                    this.dataShare.SetTicketList([...temp])
+                    break
+            }
+            console.log()
+        }
+
+    }
+
+    private RemoveActiveClass()
+	{
+		let navlinks: HTMLCollection = document.getElementsByClassName("projectbuttons")
+		for(let i=0; i < navlinks.length; i++)
+		{
+			navlinks[i].classList.remove("active")
+
+		}
+	}
+
+    	private ActivateButtonById(id: string)
+	{
+		try
+		{
+			let navlink = document.getElementById(id)
+			navlink?.classList.add("active")
+		}
+		catch
+		{
+			console.error("Invalid navlink class")
+		}
+	}
 }
 

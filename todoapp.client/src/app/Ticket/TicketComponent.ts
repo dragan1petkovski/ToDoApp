@@ -16,7 +16,9 @@ import { DeleteModalComponent } from "../DeleteComponenet/DeleteModalComponent"
 export class TicketComponenet {
     @Input() ticket!: TicketResponse
 
-    constructor(private activeModal: NgbModal, private http: ConnectionSvc) { }
+    constructor(private activeModal: NgbModal, private http: ConnectionSvc) {
+
+    }
 
     protected OpenModal(type: "update" | "delete") {
         if (type == 'update') {

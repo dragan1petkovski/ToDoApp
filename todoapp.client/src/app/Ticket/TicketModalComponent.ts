@@ -42,6 +42,7 @@ export class TicketModalComponent {
         }
         else {
             this.modalType = "Create"
+            this.http.GET<ProjectResponse[]>(api_endpoints.project).subscribe(res => this.dataShare.SetProjectList(res))
         }
 
 
@@ -58,26 +59,31 @@ export class TicketModalComponent {
         this.http.POST<TicketResponse>(api_endpoints.ticket, JSON.stringify(newTicket)).subscribe(res => {
             let temp = this.dataShare.GetTicketList()
             temp.push(res)
-            this.dataShare.SetTicketList(temp)
-            this.cdr.detectChanges()
+            this.dataShare.SetTicketList([...temp])
             this.activeModal.close()
         }, err => this.activeModal.close())
     }
 
     protected UpdateTicket() {
-        let newTicket: TicketRequest = {
+        let updateTicket: TicketRequest = {
             title: this.createTicketForm.controls.title.value ?? "",
             description: this.createTicketForm.controls.description.value ?? "",
             projectid: this.createTicketForm.controls.project.value ?? "",
             id: this._updateTicket.id
         }
-        this.http.PUT<TicketResponse>(api_endpoints.ticket, JSON.stringify(newTicket)).subscribe(res => {
+        this.http.PUT<TicketResponse>(api_endpoints.ticket, JSON.stringify(updateTicket)).subscribe(res => {
             let temp = this.dataShare.GetTicketList()
-            temp[temp.findIndex(t => t.id = res.id)] = res
-            this.dataShare.SetTicketList(temp)
-            this.cdr.detectChanges()
+            let originalItemIndex = temp.findIndex(t => t.id == res.id)
+            if(temp[originalItemIndex].projectid == res.projectid)
+            {
+                temp[originalItemIndex]= res
+                this.dataShare.SetTicketList([...temp])
+            }
+            else {
+                this.dataShare.SetTicketList(temp.filter(t => t.id != res.id))
+            }
+
             this.activeModal.close()
-            
         }, err => this.activeModal.close())
     }
 }

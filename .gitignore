@@ -123,5 +123,5 @@ Desktop.ini
 ## Logs
 .Logs/
 Logs
-.angular
+.angular/
 *.log

@@ -82,13 +82,14 @@ namespace Services
                 _db.SaveChanges();
                 return new TicketResponse()
                 {
+                    id = ticket.id,
                     title = ticket.title,
-                    projectid =ticket.projectid,
-                    finishedby = ticket.finishedby,
-                    description = ticket.description,
-                    status = ticket.status,
                     createdon = ticket.createdon,
-                    finishedon = ticket.finishedon
+                    status = ticket.status,
+                    projectid = ticket.projectid,
+                    finishedby = ticket.finishedby,
+                    finishedon = ticket.finishedon,
+                    description = ticket.description
                 };
             }
             catch (Exception ex)
@@ -118,13 +119,14 @@ namespace Services
                 _db.SaveChanges();
                 return new TicketResponse()
                 {
+                    id = ticket.id,
                     title = ticket.title,
+                    createdon = ticket.createdon,
+                    status = ticket.status,
                     projectid = ticket.projectid,
                     finishedby = ticket.finishedby,
-                    description = ticket.description,
-                    status = ticket.status,
-                    createdon = ticket.createdon,
-                    finishedon = ticket.finishedon
+                    finishedon = ticket.finishedon,
+                    description = ticket.description
                 };
             }
             catch (Exception ex)
