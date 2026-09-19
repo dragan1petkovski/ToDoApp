@@ -4,5 +4,5 @@ export class api_endpoints {
 }
 
 export class signalr_endpoint {
-    static readonly signalr = "/ticketupdate"
+    static readonly signalr = "api/ticketupdate"
 }

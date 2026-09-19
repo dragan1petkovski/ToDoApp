@@ -14,14 +14,14 @@ namespace ToDoApp.Server.Controllers
             _service = service;
         }
 
-        [HttpGet("api/[controller]")]
+        [HttpGet("[controller]")]
         public IEnumerable<ProjectResponse> GetAll()
         {
             return _service.GetAll();
         }
 
 
-        [HttpPost("api/[controller]")]
+        [HttpPost("[controller]")]
         public IActionResult Create([FromBody] ProjectRequest newProject)
         {
             if (newProject.id == null)
@@ -32,7 +32,7 @@ namespace ToDoApp.Server.Controllers
             return BadRequest();
         }
 
-        [HttpPut("api/[controller]")]
+        [HttpPut("[controller]")]
         public IActionResult Update([FromBody] ProjectRequest updateProject)
         {
             if(updateProject.id is not null)
@@ -43,7 +43,7 @@ namespace ToDoApp.Server.Controllers
             return BadRequest();
         }
 
-        [HttpDelete("api/[controller]/{id:guid}")]
+        [HttpDelete("[controller]/{id:guid}")]
         public IActionResult Delete(Guid id)
         {
             if(_service.Delete(id))

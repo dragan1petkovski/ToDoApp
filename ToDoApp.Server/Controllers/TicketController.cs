@@ -16,7 +16,7 @@ namespace ToDoApp.Server.Controllers
             _service = service;
         }
 
-        [HttpGet("api/[controller]")]
+        [HttpGet("[controller]")]
         public IEnumerable<TicketResponse> Get([FromQuery] Guid? projectid)
         {
             if(projectid.HasValue)
@@ -29,7 +29,7 @@ namespace ToDoApp.Server.Controllers
             }
         }
 
-        [HttpPost("api/[controller]")]
+        [HttpPost("[controller]")]
         public IActionResult Create([FromBody] TicketRequest newTicket)
         {
             TicketResponse output = _service.Create(newTicket);
@@ -44,7 +44,7 @@ namespace ToDoApp.Server.Controllers
             
         }
 
-        [HttpPut("api/[controller]")]
+        [HttpPut("[controller]")]
         public IActionResult Update([FromBody] TicketRequest updateTicket)
         {
             TicketResponse output = _service.Update(updateTicket);
@@ -59,7 +59,7 @@ namespace ToDoApp.Server.Controllers
         }
 
 
-        [HttpDelete("api/[controller]/{id:long}")]
+        [HttpDelete("[controller]/{id:long}")]
         public IActionResult Delete(long id)
         {
             if(_service.Delete(id))

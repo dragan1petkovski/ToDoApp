@@ -41,6 +41,7 @@ namespace ToDoApp.Server
             //app.UseCors("AllowAll");
             app.UseDefaultFiles();
             app.UsePathBase("/api");
+            app.UseRouting();
 
 
             app.UseHttpsRedirection();
