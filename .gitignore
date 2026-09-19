@@ -122,6 +122,7 @@ Desktop.ini
  
 ## Logs
 .dist/
+dist/
 .Logs/
 Logs
 .angular/
