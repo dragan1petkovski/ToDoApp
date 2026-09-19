@@ -2,6 +2,8 @@
 using DomainModel;
 using DTO;
 using Serilog;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 namespace Services
 {
     public class SvcTicket
@@ -153,6 +155,38 @@ namespace Services
             {
                 _logger.Error($"Cannot delete the Ticket {ticket.id}\n\n{ex.Message}\n\n");
                 return false;
+            }
+        }
+    
+        public TicketResponse StatusUpdate(TicketStatusUpdate statusUpdate)
+        {
+            Ticket ticket = _db.tickets.FirstOrDefault(t => t.id == statusUpdate.ticketId && t.projectid == statusUpdate.projectId);
+            if(ticket is null)
+            {
+                return null;
+            }
+            try
+            {
+                ticket.status = statusUpdate.status;
+                _db.tickets.Update(ticket);
+                _db.SaveChanges();
+                TicketResponse output = new TicketResponse()
+                {
+                    id = ticket.id,
+                    title = ticket.title,
+                    createdon = ticket.createdon,
+                    status = statusUpdate.status,
+                    projectid = ticket.projectid,
+                    finishedby = ticket.finishedby,
+                    finishedon = ticket.finishedon,
+                    description = ticket.description
+                };
+                return output;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Failed to save data in the database \n\n{ex.Message}");
+                return null;
             }
         }
     } 

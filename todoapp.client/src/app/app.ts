@@ -5,12 +5,14 @@ import { ProjectModalComponent } from './Project/ProjectModalComponent'
 import { ProjectResponse } from "./DTO/Project/ProjectResponse"
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap"
 import { DeleteModalComponent } from "./DeleteComponenet/DeleteModalComponent"
-import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray, transferArrayItem, DragDropModule } from "@angular/cdk/drag-drop"
+import { CdkDrag, CdkDragDrop, CdkDropList, DragDropModule } from "@angular/cdk/drag-drop"
 import { TicketResponse } from './DTO/Ticket/TicketResponse'
-import { Component, ChangeDetectorRef, effect } from '@angular/core'
+import { Component } from '@angular/core'
 import { api_endpoints } from "./StaticObjects/api_endpoints"
 import { DataShare } from "./Service/DataShare"
 import { CurrentProject } from './Service/CurrentProject'
+import { TicketStatusUpdate } from './DTO/Ticket/TicketStatusUpdate'
+import { SignalRService } from './Service/SignalRService'
 
 @Component({
     standalone: true,
@@ -22,7 +24,8 @@ import { CurrentProject } from './Service/CurrentProject'
 
 export class App {
 
-    constructor(private modal: NgbModal, private http: ConnectionSvc, private cdr: ChangeDetectorRef, protected dataShare: DataShare, private currentProject: CurrentProject) {
+    constructor(private modal: NgbModal, private http: ConnectionSvc, protected dataShare: DataShare, private currentProject: CurrentProject, private signalr: SignalRService) {
+        this.signalr.ngOnInit()
     }
 
     ngOnInit() {
@@ -74,34 +77,37 @@ export class App {
     public Drop(event: CdkDragDrop<TicketResponse[]>)
     {
         let temp!: TicketResponse[]
-        let tempItem!: TicketResponse
+        let tempIndex!: number
         if(event.container != event.previousContainer)
         {
             switch (event.container.id)
             {
-                case "inProgressList":
+
+                case "0":
                     temp = this.dataShare.GetTicketList()
-                    tempItem = event.item.data
-                    tempItem.status = 1
-                    temp[this.dataShare.GetTicketIndexNumber(tempItem.id)] = tempItem
+                    tempIndex = this.dataShare.GetTicketIndexNumber(event.item.data.id)
+                    temp[tempIndex].status = 0
                     this.dataShare.SetTicketList([...temp])
+                    this.signalr.UpdateTicketStatus({ticketId: event.item.data.id, projectId: event.item.data.projectid, status: 0})
+                    this.signalr.StatusUpdate(Number(event.previousContainer.id),temp[tempIndex].id)
                     break;
-                case "newList":
+                case "1":
                     temp = this.dataShare.GetTicketList()
-                    tempItem = event.item.data
-                    tempItem.status = 0
-                    temp[this.dataShare.GetTicketIndexNumber(tempItem.id)] = tempItem
+                    tempIndex = this.dataShare.GetTicketIndexNumber(event.item.data.id)
+                    temp[tempIndex].status = 1
                     this.dataShare.SetTicketList([...temp])
+                    this.signalr.UpdateTicketStatus({ticketId: event.item.data.id, projectId: event.item.data.projectid, status: 1})
+                    this.signalr.StatusUpdate(Number(event.previousContainer.id),temp[tempIndex].id)
                     break;
-                case "completeList":
+                case "2":
                     temp = this.dataShare.GetTicketList()
-                    tempItem = event.item.data
-                    tempItem.status = 2
-                    temp[this.dataShare.GetTicketIndexNumber(tempItem.id)] = tempItem
+                    tempIndex = this.dataShare.GetTicketIndexNumber(event.item.data.id)
+                    temp[tempIndex].status = 2
                     this.dataShare.SetTicketList([...temp])
-                    break
+                    this.signalr.UpdateTicketStatus({ticketId: event.item.data.id, projectId: event.item.data.projectid, status: 2})
+                    this.signalr.StatusUpdate(Number(event.previousContainer.id),temp[tempIndex].id)
+                    break;
             }
-            console.log()
         }
 
     }

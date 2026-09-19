@@ -1,7 +1,12 @@
 {
-  "/api": {
-    "target": "https://localhost:5000",
-    "secure": false,
-    "changeOrigin": true
-  }
+    "/api": {
+        "target": "https://localhost:5000",
+        "secure": false,
+        "changeOrigin": true
+    },
+    "/ticketupdate": {
+        "target": "https://localhost:5000",
+        "secure": false,
+        "ws": true
+    }
 }

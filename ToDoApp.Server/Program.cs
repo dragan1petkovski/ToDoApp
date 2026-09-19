@@ -20,18 +20,25 @@ namespace ToDoApp.Server
             builder.Host.UseSerilog();
 
             builder.Services.AddDbContext<MSSQLDB>(option => option.UseSqlServer(connectionstring));
-            
+            builder.Services.AddSignalR();
             builder.Services.AddControllers();
             builder.Services.AddSwaggerGen();
-            builder.Services.AddCors();
+            //builder.Services.AddCors(options =>
+            //{
+            //    options.AddPolicy("AllowAll", policy =>
+            //    {
+            //        policy.AllowAnyOrigin()
+            //              .AllowAnyMethod()
+            //              .AllowAnyHeader();
+            //    });
+            //});
             builder.Services.AddOpenApi();
-
             builder.Services.AddSerilog(Log.Logger);
             builder.Services.AddScoped<SvcProject>();
             builder.Services.AddScoped<SvcTicket>();
 
             var app = builder.Build();
-
+            //app.UseCors("AllowAll");
             app.UseDefaultFiles();
             app.UsePathBase("/api");
 
@@ -40,7 +47,7 @@ namespace ToDoApp.Server
 
             app.UseAuthorization();
 
-
+            app.MapHub<TicketHub>("/ticketupdate");
             app.MapControllers();
 
             app.MapFallbackToFile("/index.html");

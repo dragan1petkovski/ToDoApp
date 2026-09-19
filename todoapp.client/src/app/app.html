@@ -30,7 +30,7 @@
         <div class="col">
             <div class="row justify-content-center fw-bold m-0 mb-1 border rounded-3"> New </div>
 
-            <div style="min-height: 200px;" cdkDropList id="newList" (cdkDropListDropped)="Drop($event)">
+            <div style="height: 100%;" cdkDropList id=0 (cdkDropListDropped)="Drop($event)">
                 @for(ticket of this.dataShare.GetTicketList().filter(t => t.status == 0); track ticket.id)
                 {
                 <ticket [ticket]="ticket" cdkDrag [cdkDragData]="ticket"></ticket>
@@ -45,7 +45,7 @@
         <div class="col" >
             <div class="row justify-content-center fw-bold m-0 mb-1 border rounded-3"> In Progres </div>
 
-            <div style="min-height: 200px" cdkDropList id="inProgressList" (cdkDropListDropped)="Drop($event)" >
+            <div style="height: 100%; " cdkDropList id=1 (cdkDropListDropped)="Drop($event)" >
                 @for(ticket of this.dataShare.GetTicketList().filter(t => t.status == 1); track ticket.id)
                 {
                 <ticket [ticket]="ticket" cdkDrag [cdkDragData]="ticket"></ticket>
@@ -66,7 +66,7 @@
                 </div>
             </div>
 
-            <div style="min-height: 200px" cdkDropList id="completeList"  (cdkDropListDropped)="Drop($event)">
+            <div style="height: 100%; " cdkDropList id=2  (cdkDropListDropped)="Drop($event)">
                 @for(ticket of this.dataShare.GetTicketList().filter(t => t.status == 2); track ticket.id)
                 {
                 <ticket [ticket]="ticket" cdkDrag [cdkDragData]="ticket"></ticket>

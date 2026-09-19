@@ -22,4 +22,8 @@ export class ConnectionSvc {
     DELETE(url: string) {
         return this.http.delete(url)
     }
+
+    PATCH(url: string, data: string) {
+        return this.http.patch(url, data)
+    }
 }
