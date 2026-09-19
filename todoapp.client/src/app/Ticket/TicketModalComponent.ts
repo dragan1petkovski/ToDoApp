@@ -6,6 +6,7 @@ import { api_endpoints } from "../StaticObjects/api_endpoints"
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { TicketRequest } from "../DTO/Ticket/TicketRequest"
 import { TicketResponse } from "../DTO/Ticket/TicketResponse"
+import { CurrentProject } from "../Service/CurrentProject"
 
 import { DataShare} from "../Service/DataShare"
 
@@ -17,7 +18,7 @@ import { DataShare} from "../Service/DataShare"
 
 })
 export class TicketModalComponent {
-    constructor(protected activeModal: NgbActiveModal, private http: ConnectionSvc, private cdr: ChangeDetectorRef) {
+    constructor(protected activeModal: NgbActiveModal, private http: ConnectionSvc, private currentProject: CurrentProject) {
         this.dataShare.GetProjectList();
     }
     protected dataShare = inject(DataShare)
@@ -57,9 +58,13 @@ export class TicketModalComponent {
             id: null
         }
         this.http.POST<TicketResponse>(api_endpoints.ticket, JSON.stringify(newTicket)).subscribe(res => {
-            let temp = this.dataShare.GetTicketList()
-            temp.push(res)
-            this.dataShare.SetTicketList([...temp])
+            if(newTicket.projectid == this.currentProject.GetCurrentProjectId())
+            {
+                let temp = this.dataShare.GetTicketList()
+                temp.push(res)
+                this.dataShare.SetTicketList([...temp])
+            }
+
             this.activeModal.close()
         }, err => this.activeModal.close())
     }

@@ -11,8 +11,8 @@ import { Component } from '@angular/core'
 import { api_endpoints } from "./StaticObjects/api_endpoints"
 import { DataShare } from "./Service/DataShare"
 import { CurrentProject } from './Service/CurrentProject'
-import { TicketStatusUpdate } from './DTO/Ticket/TicketStatusUpdate'
 import { SignalRService } from './Service/SignalRService'
+import { LoadPageDataSvc } from './Service/LoadPageDataSvc'
 
 @Component({
     standalone: true,
@@ -24,20 +24,16 @@ import { SignalRService } from './Service/SignalRService'
 
 export class App {
 
-    constructor(private modal: NgbModal, private http: ConnectionSvc, protected dataShare: DataShare, private currentProject: CurrentProject, private signalr: SignalRService) {
+    constructor(private modal: NgbModal, private http: ConnectionSvc, protected dataShare: DataShare, private currentProject: CurrentProject, private signalr: SignalRService, private data: LoadPageDataSvc) {
         this.signalr.ngOnInit()
     }
 
     ngOnInit() {
-        this.http.GET<ProjectResponse[]>(api_endpoints.project).subscribe(plist => {
-            this.dataShare.SetProjectList(plist)
-            this.http.GET<TicketResponse[]>(api_endpoints.ticket.concat(`?projectid=${plist[0].id}`)).subscribe(tlist => this.dataShare.SetTicketList(tlist))
-        })
+        this.data.LoadData()
 
     }
 
     public OpenModal(type: string, item: ProjectResponse | TicketResponse | null) {
-        console.log(type)
         switch (type) {
             case 'project':
                 if (item == null) {
@@ -61,9 +57,7 @@ export class App {
         this.RemoveActiveClass()
         this.ActivateButtonById(projectId)
         this.currentProject.SetCurrentProjectId(projectId)
-        this.http.GET<TicketResponse[]>(api_endpoints.ticket.concat(`?projectid=${projectId}`)).subscribe(tlist => {
-            this.dataShare.SetTicketList(tlist)
-            })
+        this.data.LoadTicketsByProjectId(projectId)
     }
 
     public DeleteProject(type: string, name: string, id: string) {

@@ -25,8 +25,12 @@ export class TicketComponenet {
             let _updateModal = this.activeModal.open(TicketModalComponent, { animation: false })
             _updateModal.componentInstance._updateTicket = this.ticket
         }
-        else {
-            this.activeModal.open(DeleteModalComponent, { animation: false })
+        else if(type == "delete") {
+            let _updateModal = this.activeModal.open(DeleteModalComponent, { animation: false })
+            _updateModal.componentInstance.id = this.ticket.id
+            _updateModal.componentInstance.name = this.ticket.title
+            _updateModal.componentInstance.type = "ticket"
+
         }
     }
 }

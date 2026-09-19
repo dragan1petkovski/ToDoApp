@@ -3,7 +3,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap"
 import { ConnectionSvc } from '../Service/ConnectionSvc'
 import { api_endpoints } from '../StaticObjects/api_endpoints'
 import { DataShare } from '../Service/DataShare'
-
+import { LoadPageDataSvc } from '../Service/LoadPageDataSvc'
 @Component({
     standalone: true,
     templateUrl: "DeleteModalComponent.html",
@@ -12,7 +12,7 @@ import { DataShare } from '../Service/DataShare'
 })
 
 export class DeleteModalComponent {
-    constructor(protected activeModal: NgbActiveModal, private conService: ConnectionSvc) { }
+    constructor(protected activeModal: NgbActiveModal, private conService: ConnectionSvc, private data: LoadPageDataSvc) { }
     dataShare = inject(DataShare)
     protected id!: string
     protected name!: string
@@ -21,7 +21,8 @@ export class DeleteModalComponent {
         switch (this.type) {
             case 'project':
                 this.conService.DELETE(api_endpoints.project.concat(`/${this.id}`)).subscribe(res => {
-                    this.dataShare.SetProjectList(this.dataShare.GetProjectList().filter(t => t.id != this.id))
+                    this.dataShare.SetProjectList(this.dataShare.GetProjectList().filter(p => p.id != this.id))
+                    this.data.LoadData()
                     this.activeModal.close()
                 }, err => this.activeModal.close())
                 break;
