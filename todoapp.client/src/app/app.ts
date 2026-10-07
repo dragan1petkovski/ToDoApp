@@ -7,7 +7,7 @@ import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap"
 import { DeleteModalComponent } from "./DeleteComponenet/DeleteModalComponent"
 import { CdkDrag, CdkDragDrop, CdkDropList, DragDropModule } from "@angular/cdk/drag-drop"
 import { TicketResponse } from './DTO/Ticket/TicketResponse'
-import { Component } from '@angular/core'
+import { Component, Signal, computed } from '@angular/core'
 import { TicketStatus } from "./StaticObjects/SearchObjects"
 import { DataShare } from "./Service/DataShare"
 import { CurrentProject } from './Service/CurrentProject'
@@ -24,6 +24,7 @@ import { LoadPageDataSvc } from './Service/LoadPageDataSvc'
 
 export class App {
 
+    protected filterList:Signal<TicketResponse[]> = computed(() => this.dataShare.GetTicketList().filter(t => t.title ==" test"))
     constructor(private modal: NgbModal, private http: ConnectionSvc, protected dataShare: DataShare, private currentProject: CurrentProject, private signalr: SignalRService, private data: LoadPageDataSvc) {
         this.signalr.ngOnInit()
     }
@@ -129,74 +130,80 @@ export class App {
 		}
 	}
 
-    public SearchTicket() {
-        let searchString = document.getElementById("ticketSearch") as HTMLInputElement
-        let ticketList: TicketResponse[] = this.dataShare.GetTicketList().filter(t => t.projectid == this.currentProject.GetCurrentProjectId())
-        var split: string[] = searchString.value.split(":")
-        let output!: TicketResponse[]
-        switch(split.length)
-        {
-            case 3:
-                try {
-                    const [status, property, text] = split
-                    switch (property){
-                        case "title":
-                            output = ticketList.filter(t => t.status == TicketStatus[status] && t.title.includes(text)).sort((a,b) => a.title.localeCompare(b.title))
-                            break;
-                        case "description":
-                            output = ticketList.filter(t => t.status == TicketStatus[status] && t.description?.includes(text)).sort((a,b) => {
-                                if(a.description != null && b.description != null)
-                                {
-                                    return a.description.localeCompare(b.description)
-                                }
-                                else if(a.description != null && b.description == null)
-                                {
-                                    return 2
-                                }
-                                else if(a.description == null && b.description != null)
-                                {
-                                    return -2
-                                }
-                                else
-                                {
-                                    return 0
-                                }
-                            })
-                            break;
-                    }
-                    break;
-                }
-                catch{
-                    console.error("Invalid status or property itesm")
-                    break;
-                }
-            case 2:
-                try {
-                    const [status, text] = split
-                    output = ticketList.filter(t => t.status == TicketStatus[status] && (t.title.includes(text) || t.description?.includes(text)) ).sort((a,b) => a.title.localeCompare(b.title))
-                    break;
-                }
-                catch {
-                    console.error("Invalid status")
-                    break;
-                }
-            case 1:
-            {
-                output = ticketList.filter(t => t.title.includes(split[0]) || t.description?.includes(split[0])).sort((a,b) => a.title.localeCompare(b.title))
-                break;
-            }
-            default:
-            {
-                if(split.length > 3)
-                {
-                    console.error(`To may filters 3 is limit ${split}`)
-                }
-            }
-        }
-        let reminingTicketList = ticketList.filter(t => !output.includes(t))
-        this.dataShare.SetTicketList([...output,...reminingTicketList])
+    public SearchTicket()
+    {
+
+    }
+
+
+    //public SearchTicket() {
+    //    let searchString = document.getElementById("ticketSearch") as HTMLInputElement
+    //    let ticketList: TicketResponse[] = this.dataShare.GetTicketList().filter(t => t.projectid == this.currentProject.GetCurrentProjectId())
+    //    var split: string[] = searchString.value.split(":")
+    //    let output!: TicketResponse[]
+    //    switch(split.length)
+    //    {
+    //        case 3:
+    //            try {
+    //                const [status, property, text] = split
+    //                switch (property){
+    //                    case "title":
+    //                        output = ticketList.filter(t => t.status == TicketStatus[status] && t.title.includes(text)).sort((a,b) => a.title.localeCompare(b.title))
+    //                        break;
+    //                    case "description":
+    //                        output = ticketList.filter(t => t.status == TicketStatus[status] && t.description?.includes(text)).sort((a,b) => {
+    //                            if(a.description != null && b.description != null)
+    //                            {
+    //                                return a.description.localeCompare(b.description)
+    //                            }
+    //                            else if(a.description != null && b.description == null)
+    //                            {
+    //                                return 2
+    //                            }
+    //                            else if(a.description == null && b.description != null)
+    //                            {
+    //                                return -2
+    //                            }
+    //                            else
+    //                            {
+    //                                return 0
+    //                            }
+    //                        })
+    //                        break;
+    //                }
+    //                break;
+    //            }
+    //            catch{
+    //                console.error("Invalid status or property itesm")
+    //                break;
+    //            }
+    //        case 2:
+    //            try {
+    //                const [status, text] = split
+    //                output = ticketList.filter(t => t.status == TicketStatus[status] && (t.title.includes(text) || t.description?.includes(text)) ).sort((a,b) => a.title.localeCompare(b.title))
+    //                break;
+    //            }
+    //            catch {
+    //                console.error("Invalid status")
+    //                break;
+    //            }
+    //        case 1:
+    //        {
+    //            output = ticketList.filter(t => t.title.includes(split[0]) || t.description?.includes(split[0])).sort((a,b) => a.title.localeCompare(b.title))
+    //            break;
+    //        }
+    //        default:
+    //        {
+    //            if(split.length > 3)
+    //            {
+    //                console.error(`To may filters 3 is limit ${split}`)
+    //            }
+    //        }
+    //    }
+    //    let reminingTicketList = ticketList.filter(t => !output.includes(t))
+    //    this.dataShare.SetTicketList([...output,...reminingTicketList])
 
         
-    }
+    //}
 }
 

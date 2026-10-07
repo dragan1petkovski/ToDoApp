@@ -167,6 +167,14 @@ namespace Services
             }
             try
             {
+                if(TicketStatusEnum.Completed == statusUpdate.status)
+                {
+                    ticket.finishedon = DateTime.Now;
+                }
+                else
+                {
+                    ticket.finishedon = null;
+                }
                 ticket.status = statusUpdate.status;
                 _db.tickets.Update(ticket);
                 _db.SaveChanges();

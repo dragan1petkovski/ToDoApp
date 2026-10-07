@@ -71,7 +71,7 @@
           "defaultConfiguration": "development",
           "options": {
             "proxyConfig": "src/proxy.conf.json",
-            "port": 443,
+            "port": 4200,
             "hmr": false
           }
         }
