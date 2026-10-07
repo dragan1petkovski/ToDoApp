@@ -13,7 +13,15 @@
     </div>
 
     <div class="d-flex">
-        <p class="me-4"><span class="fw-bold">Created On: </span> {{ticket.createdon | date: 'dd.MM.yyyy HH:mm'}}</p>
+        <p class="me-4">
+            <span class="fw-bold">Created On: </span> {{ticket.createdon | date: 'dd.MM.yyyy HH:mm'}}&nbsp;&nbsp;&nbsp;&nbsp;
+            @if(this.ticket.finishedon)
+            {
+            <span class="fw-bold">Finished On: </span> {{ticket.finishedon | date: 'dd.MM.yyyy HH:mm'}}
+            }
+
+        </p>
+        
         @if(this.ticket.finishedby)
         {
         <p><span class="fw-bold">Finish By: </span> {{ticket.finishedby | date: 'dd.MM.yyyy HH:mm'}}</p>

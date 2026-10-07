@@ -51,7 +51,9 @@ namespace Services
     
         public IEnumerable<TicketResponse> GetTicketsByProjectId(Guid projectId)
         {
-            return _db.tickets.Where(t => t.projectid == projectId).Select(t => new TicketResponse()
+            return _db.tickets.Where(t => t.projectid == projectId)
+                              .Where(t => (t.status != TicketStatusEnum.Completed) || (t.finishedon.HasValue && t.finishedon.Value.Date == DateTime.Now.Date))
+                              .Select(t => new TicketResponse()
             {
                 id = t.id,
                 title = t.title,
@@ -63,6 +65,23 @@ namespace Services
                 finishedby = t.finishedby,
                 finishedon = t.finishedon,
             });
+        }
+
+        public IEnumerable<TicketResponse> GetCompletedTicketsByProjectId(Guid projectId)
+        {
+            return _db.tickets.Where(t => t.projectid == projectId && t.status == TicketStatusEnum.Completed && (t.finishedon.HasValue && t.finishedon.Value.Date < DateTime.Now.Date))
+                              .Select(t => new TicketResponse()
+                              {
+                                  id = t.id,
+                                  title = t.title,
+                                  createdon = t.createdon,
+                                  status = t.status,
+                                  projectid = t.projectid,
+
+                                  description = t.description,
+                                  finishedby = t.finishedby,
+                                  finishedon = t.finishedon,
+                              });
         }
 
         public TicketResponse Create(TicketRequest newTicket)
@@ -167,6 +186,7 @@ namespace Services
             }
             try
             {
+                
                 if(TicketStatusEnum.Completed == statusUpdate.status)
                 {
                     ticket.finishedon = DateTime.Now;

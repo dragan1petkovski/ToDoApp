@@ -2,6 +2,7 @@ using Serilog;
 using Microsoft.EntityFrameworkCore;
 using DBLayer;
 using Services;
+using Microsoft.AspNetCore.Http.Connections;
 namespace ToDoApp.Server
 {
     public class Program
@@ -39,7 +40,11 @@ namespace ToDoApp.Server
 
             app.UseAuthorization();
 
-            app.MapHub<TicketHub>("/ticketupdate");
+            app.MapHub<TicketHub>("/ticketupdate", options =>
+            {
+                options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets;
+                options.MinimumProtocolVersion = 1;
+            });
             app.MapControllers();
 
             app.MapFallbackToFile("/index.html");

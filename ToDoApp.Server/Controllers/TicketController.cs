@@ -17,16 +17,17 @@ namespace ToDoApp.Server.Controllers
         }
 
         [HttpGet("[controller]")]
-        public IEnumerable<TicketResponse> Get([FromQuery] Guid? projectid)
+        public IEnumerable<TicketResponse> Get([FromQuery] Guid projectid, [FromQuery] bool? completed)
         {
-            if(projectid.HasValue)
+            if(completed.HasValue && completed.Value)
             {
-                return _service.GetTicketsByProjectId(projectid.Value);
+                return _service.GetCompletedTicketsByProjectId(projectid);
             }
             else
             {
-                return _service.GetAllTickets();
+                return _service.GetTicketsByProjectId(projectid);
             }
+
         }
 
         [HttpPost("[controller]")]

@@ -23,10 +23,8 @@ import { LoadPageDataSvc } from './Service/LoadPageDataSvc'
 })
 
 export class App {
-
-    protected filterList:Signal<TicketResponse[]> = computed(() => this.dataShare.GetTicketList().filter(t => t.title ==" test"))
     constructor(private modal: NgbModal, private http: ConnectionSvc, protected dataShare: DataShare, private currentProject: CurrentProject, private signalr: SignalRService, private data: LoadPageDataSvc) {
-        this.signalr.ngOnInit()
+        this.signalr.StartConnection()
     }
 
     ngOnInit() {
@@ -55,6 +53,11 @@ export class App {
     }
 
     public GetProjectTickets(projectId: string) {
+        let button: HTMLElement | null = document.getElementById("completedTicketsButton")
+        if(button !== null)
+        {
+            button.className = "bi bi-eye"
+        }
         this.RemoveActiveClass()
         this.ActivateButtonById(projectId)
         this.currentProject.SetCurrentProjectId(projectId)
@@ -130,80 +133,100 @@ export class App {
 		}
 	}
 
-    public SearchTicket()
-    {
-
-    }
-
-
-    //public SearchTicket() {
-    //    let searchString = document.getElementById("ticketSearch") as HTMLInputElement
-    //    let ticketList: TicketResponse[] = this.dataShare.GetTicketList().filter(t => t.projectid == this.currentProject.GetCurrentProjectId())
-    //    var split: string[] = searchString.value.split(":")
-    //    let output!: TicketResponse[]
-    //    switch(split.length)
-    //    {
-    //        case 3:
-    //            try {
-    //                const [status, property, text] = split
-    //                switch (property){
-    //                    case "title":
-    //                        output = ticketList.filter(t => t.status == TicketStatus[status] && t.title.includes(text)).sort((a,b) => a.title.localeCompare(b.title))
-    //                        break;
-    //                    case "description":
-    //                        output = ticketList.filter(t => t.status == TicketStatus[status] && t.description?.includes(text)).sort((a,b) => {
-    //                            if(a.description != null && b.description != null)
-    //                            {
-    //                                return a.description.localeCompare(b.description)
-    //                            }
-    //                            else if(a.description != null && b.description == null)
-    //                            {
-    //                                return 2
-    //                            }
-    //                            else if(a.description == null && b.description != null)
-    //                            {
-    //                                return -2
-    //                            }
-    //                            else
-    //                            {
-    //                                return 0
-    //                            }
-    //                        })
-    //                        break;
-    //                }
-    //                break;
-    //            }
-    //            catch{
-    //                console.error("Invalid status or property itesm")
-    //                break;
-    //            }
-    //        case 2:
-    //            try {
-    //                const [status, text] = split
-    //                output = ticketList.filter(t => t.status == TicketStatus[status] && (t.title.includes(text) || t.description?.includes(text)) ).sort((a,b) => a.title.localeCompare(b.title))
-    //                break;
-    //            }
-    //            catch {
-    //                console.error("Invalid status")
-    //                break;
-    //            }
-    //        case 1:
-    //        {
-    //            output = ticketList.filter(t => t.title.includes(split[0]) || t.description?.includes(split[0])).sort((a,b) => a.title.localeCompare(b.title))
-    //            break;
-    //        }
-    //        default:
-    //        {
-    //            if(split.length > 3)
-    //            {
-    //                console.error(`To may filters 3 is limit ${split}`)
-    //            }
-    //        }
-    //    }
-    //    let reminingTicketList = ticketList.filter(t => !output.includes(t))
-    //    this.dataShare.SetTicketList([...output,...reminingTicketList])
+    public SearchTicket() {
+       let searchString = document.getElementById("ticketSearch") as HTMLInputElement
+       let ticketList: TicketResponse[] = this.dataShare.GetTicketList().filter(t => t.projectid == this.currentProject.GetCurrentProjectId())
+       var split: string[] = searchString.value.split(":")
+       let output!: TicketResponse[]
+       switch(split.length)
+       {
+           case 3:
+               try {
+                   const [status, property, text] = split
+                   switch (property){
+                       case "title":
+                           output = ticketList.filter(t => t.status == TicketStatus[status] && t.title.includes(text)).sort((a,b) => a.title.localeCompare(b.title))
+                           break;
+                       case "description":
+                           output = ticketList.filter(t => t.status == TicketStatus[status] && t.description?.includes(text)).sort((a,b) => {
+                               if(a.description != null && b.description != null)
+                               {
+                                   return a.description.localeCompare(b.description)
+                               }
+                               else if(a.description != null && b.description == null)
+                               {
+                                   return 2
+                               }
+                               else if(a.description == null && b.description != null)
+                               {
+                                   return -2
+                               }
+                               else
+                               {
+                                   return 0
+                               }
+                           })
+                           break;
+                   }
+                   break;
+               }
+               catch{
+                   console.error("Invalid status or property itesm")
+                   break;
+               }
+           case 2:
+               try {
+                   const [status, text] = split
+                   output = ticketList.filter(t => t.status == TicketStatus[status] && (t.title.includes(text) || t.description?.includes(text)) ).sort((a,b) => a.title.localeCompare(b.title))
+                   break;
+               }
+               catch {
+                   console.error("Invalid status")
+                   break;
+               }
+           case 1:
+           {
+               output = ticketList.filter(t => t.title.includes(split[0]) || t.description?.includes(split[0])).sort((a,b) => a.title.localeCompare(b.title))
+               break;
+           }
+           default:
+           {
+               if(split.length > 3)
+               {
+                   console.error(`To may filters 3 is limit ${split}`)
+               }
+           }
+       }
+       let reminingTicketList = ticketList.filter(t => !output.includes(t))
+       this.dataShare.SetTicketList([...output,...reminingTicketList])
 
         
-    //}
+    }
+
+    public GetCompltedTicketsByProjectId()
+    {
+        let button: HTMLElement | null = document.getElementById("completedTicketsButton")
+        
+        if(button != null )
+        {
+            if(button.className === "bi bi-eye")
+            {
+                button.className = "bi bi-eye-slash"
+                this.data.LoadCompletedTicketsByProjectId(this.currentProject.GetCurrentProjectId())
+                
+            }
+            else if(button.className === "bi bi-eye-slash")
+            {
+                button.className = "bi bi-eye"
+                let today = new Date()
+                today.setHours(0,0,0,0)
+                let temp = this.dataShare.GetTicketList().filter(t => t.projectid == this.currentProject.GetCurrentProjectId())
+                                                         .filter(t => t.status != 2 || (t.status == 2 && new Date(t.finishedon) > today))
+                this.dataShare.SetTicketList([...temp])
+            }
+            
+            
+        }
+    }
 }
 

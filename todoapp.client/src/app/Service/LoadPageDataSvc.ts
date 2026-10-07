@@ -31,4 +31,11 @@ export class LoadPageDataSvc {
             this.dataShare.SetTicketList(tlist)
             })
     }
+
+    public LoadCompletedTicketsByProjectId(projectid: string)
+    {
+        this.http.GET<TicketResponse[]>(api_endpoints.ticket.concat(`?projectid=${projectid}&completed=true`)).subscribe(tlist => {
+            this.dataShare.SetTicketList([...this.dataShare.GetTicketList(),...tlist])
+        })
+    }
 }

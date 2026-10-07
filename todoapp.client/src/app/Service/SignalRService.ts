@@ -10,11 +10,26 @@ import { TicketResponse } from '../DTO/Ticket/TicketResponse';
 })
 export class SignalRService {
   private hubConnection!: signalR.HubConnection;
-  constructor( private dataShare: DataShare) {}
-  ngOnInit(){
-      this.hubConnection = new signalR.HubConnectionBuilder().withUrl(signalr_endpoint.signalr).build()
-      this.hubConnection.start().then(() => console.log("Signal R is sucessfully connected"))
+  constructor( private dataShare: DataShare) {
+        this.hubConnection = new signalR.HubConnectionBuilder().withUrl(signalr_endpoint.signalr,{transport: signalR.HttpTransportType.WebSockets, skipNegotiation: true})
+                                                               //.configureLogging(signalR.LogLevel.Trace) -> it is use for troubleshooting signalr connection
+                                                               .build()
+    }
+
+  public StartConnection()
+  {
+      console.log(this.hubConnection.state)
+    if( this.hubConnection.state === "Connected" )
+    {
+        console.log("Already Connected")
+        return;
+    }
+    else
+    {
+        this.hubConnection.start().then(() => console.log("Signal R is sucessfully connected"))
                                 .catch(() => console.log("Signal R failed"));
+    }
+
   }
 
   public UpdateTicketStatus = (ticketstatus: TicketStatusUpdate ) => {
@@ -29,11 +44,13 @@ export class SignalRService {
                  let tempIndex = temp.findIndex(t => t.id == ticket.id && t.projectid== ticket.projectid)
                  if(temp[tempIndex])
                  {
-                     if(temp[tempIndex].status != ticket.status)
+                     if((originalTicketStatus == 2 && ticket.status != 2) || ticket.status == 2)
                      {
                         temp[tempIndex] = ticket
                         this.dataShare.SetTicketList([...temp])
                      }
+
+
                  }
              }
              else
