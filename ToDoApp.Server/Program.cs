@@ -40,8 +40,7 @@ namespace ToDoApp.Server
 
             app.UseAuthorization();
 
-            string signalR_route = builder.Configuration.GetSection("SignalR").GetSection("route").Value;
-            app.MapHub<TicketHub>(signalR_route, options =>
+            app.MapHub<TicketHub>("/ticketupdate", options =>
             {
                 options.Transports = Microsoft.AspNetCore.Http.Connections.HttpTransportType.WebSockets;
                 options.MinimumProtocolVersion = 1;

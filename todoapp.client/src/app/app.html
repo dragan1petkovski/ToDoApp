@@ -14,7 +14,7 @@
         @for(project of this.dataShare.GetProjectList(); track project.id)
         {
         <div class="d-flex justify-content-between btn btn-outline-dark mb-2 projectbuttons" id={{project.id}}>
-            <div class=" w-100 " (click)="GetProjectTickets(project.id)">
+            <div class=" w-100 text-break" (click)="GetProjectTickets(project.id)">
                 {{project.name}}
             </div>
             <i class="bi bi-trash" (click)="DeleteProject('project',project.name, project.id)"></i>&nbsp;

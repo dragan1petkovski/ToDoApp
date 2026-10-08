@@ -1,9 +1,10 @@
-import { booleanAttribute, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
-import { signalr_endpoint } from '../StaticObjects/api_endpoints';
+import { api_endpoints, signalr_endpoint } from '../StaticObjects/api_endpoints';
 import { TicketStatusUpdate } from '../DTO/Ticket/TicketStatusUpdate'
 import { DataShare } from './DataShare';
 import { TicketResponse } from '../DTO/Ticket/TicketResponse';
+import { environment } from "../../environments/environment"
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ import { TicketResponse } from '../DTO/Ticket/TicketResponse';
 export class SignalRService {
   private hubConnection!: signalR.HubConnection;
   constructor( private dataShare: DataShare) {
-        this.hubConnection = new signalR.HubConnectionBuilder().withUrl(signalr_endpoint.signalr,{transport: signalR.HttpTransportType.WebSockets, skipNegotiation: true})
+        this.hubConnection = new signalR.HubConnectionBuilder().withUrl(environment.signalrUrl,{transport: signalR.HttpTransportType.WebSockets, skipNegotiation: true})
                                                                //.configureLogging(signalR.LogLevel.Trace) -> it is use for troubleshooting signalr connection
                                                                .build()
     }
