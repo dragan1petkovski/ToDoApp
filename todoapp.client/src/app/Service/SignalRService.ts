@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
-import { api_endpoints, signalr_endpoint } from '../StaticObjects/api_endpoints';
 import { TicketStatusUpdate } from '../DTO/Ticket/TicketStatusUpdate'
 import { DataShare } from './DataShare';
 import { TicketResponse } from '../DTO/Ticket/TicketResponse';
