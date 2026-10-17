@@ -20,7 +20,7 @@ namespace ToDoApp.Server
 
             builder.Host.UseSerilog();
 
-            builder.Services.AddDbContext<MSSQLDB>(option => option.UseSqlServer(connectionstring));
+            builder.Services.AddDbContext<MSSQLDB>(option => option.UseSqlite(connectionstring));
             builder.Services.AddSignalR();
             builder.Services.AddControllers();
             builder.Services.AddSwaggerGen();
