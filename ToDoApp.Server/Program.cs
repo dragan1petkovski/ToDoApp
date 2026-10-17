@@ -23,9 +23,8 @@ namespace ToDoApp.Server
             builder.Services.AddDbContext<MSSQLDB>(option => option.UseSqlite(connectionstring));
             builder.Services.AddSignalR();
             builder.Services.AddControllers();
-            builder.Services.AddSwaggerGen();
+            
 
-            builder.Services.AddOpenApi();
             builder.Services.AddSerilog(Log.Logger);
             builder.Services.AddScoped<SvcProject>();
             builder.Services.AddScoped<SvcTicket>();
@@ -35,10 +34,6 @@ namespace ToDoApp.Server
             app.UsePathBase("/api");
             app.UseRouting();
 
-
-            app.UseHttpsRedirection();
-
-            app.UseAuthorization();
 
             app.MapHub<TicketHub>("/ticketupdate", options =>
             {
