@@ -1,4 +1,4 @@
-import { Component, WritableSignal, signal, inject , ChangeDetectorRef} from '@angular/core';
+import { Component,  inject , OnInit} from '@angular/core';
 import { ProjectResponse } from '../DTO/Project/ProjectResponse';
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap"
 import { ConnectionSvc } from "../Service/ConnectionSvc"
@@ -17,7 +17,7 @@ import { DataShare} from "../Service/DataShare"
     providers: [ConnectionSvc]
 
 })
-export class TicketModalComponent {
+export class TicketModalComponent implements OnInit {
     constructor(protected activeModal: NgbActiveModal, private http: ConnectionSvc, private currentProject: CurrentProject) {
         this.dataShare.GetProjectList();
     }

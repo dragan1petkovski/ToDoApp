@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectorRef } from '@angular/core'
+import { Component, inject, OnInit } from '@angular/core'
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap"
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ConnectionSvc } from '../Service/ConnectionSvc'
@@ -13,8 +13,8 @@ import { DataShare } from "../Service/DataShare"
     providers: [ConnectionSvc]
 })
 
-export class ProjectModalComponent {
-    constructor(protected activeModal: NgbActiveModal, private conService: ConnectionSvc, private cdr: ChangeDetectorRef ) { }
+export class ProjectModalComponent implements OnInit {
+    constructor(protected activeModal: NgbActiveModal, private conService: ConnectionSvc ) { }
     dataShare = inject(DataShare)
     _updateProject!: ProjectRequest
     protected type!: 'Update' | 'Create'

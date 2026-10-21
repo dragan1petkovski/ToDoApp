@@ -7,7 +7,7 @@ import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap"
 import { DeleteModalComponent } from "./DeleteComponenet/DeleteModalComponent"
 import { CdkDrag, CdkDragDrop, CdkDropList, DragDropModule } from "@angular/cdk/drag-drop"
 import { TicketResponse } from './DTO/Ticket/TicketResponse'
-import { Component, Signal, computed } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
 import { TicketStatus } from "./StaticObjects/SearchObjects"
 import { DataShare } from "./Service/DataShare"
 import { CurrentProject } from './Service/CurrentProject'
@@ -22,7 +22,7 @@ import { LoadPageDataSvc } from './Service/LoadPageDataSvc'
     providers: [ConnectionSvc]
 })
 
-export class App {
+export class App implements OnInit {
     constructor(private modal: NgbModal, private http: ConnectionSvc, protected dataShare: DataShare, private currentProject: CurrentProject, private signalr: SignalRService, private data: LoadPageDataSvc) {
         this.signalr.StartConnection()
     }
